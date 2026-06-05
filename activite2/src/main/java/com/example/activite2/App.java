@@ -10,7 +10,7 @@ public final class App {
      * Évite l'instanciation de cette classe utilitaire.
      */
     private App() {
-        // Constructeur vide
+        // Constructeur intentionnellement vide
     }
 
     /**

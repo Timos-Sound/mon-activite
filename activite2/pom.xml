@@ -64,6 +64,7 @@
                 <effort>Max</effort>
                 <threshold>Low</threshold>
                 <xmlOutput>true</xmlOutput>
+                <fork>false</fork>
             </configuration>
             <executions>
                 <execution>

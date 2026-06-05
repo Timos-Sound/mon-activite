@@ -1,7 +1,7 @@
 package com.example.activite2;
 
 /**
- * Hello world!
+ * Hello world!!
  *
  */
 public class App 

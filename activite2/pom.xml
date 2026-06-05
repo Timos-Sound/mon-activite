@@ -13,7 +13,70 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.3.1</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+                <consoleOutput>true</consoleOutput>
+                <failsOnError>false</failsOnError>
+                <linkXRef>false</linkXRef>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>validate</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>checkstyle</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.21.2</version>
+            <configuration>
+                <linkXRef>false</linkXRef>
+                <sourceEncoding>UTF-8</sourceEncoding>
+                <minimumTokens>100</minimumTokens>
+                <targetJdk>17</targetJdk> </configuration>
+            <executions>
+                <execution>
+                    <id>pmd-analysis</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>pmd</goal>
+                        <goal>cpd</goal> </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.8.2.0</version>
+            <configuration>
+                <effort>Max</effort>
+                <threshold>Low</threshold>
+                <xmlOutput>true</xmlOutput>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>spotbugs-analysis</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>spotbugs</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

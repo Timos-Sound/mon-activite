@@ -1,3 +1,12 @@
+package mon.projet.sudoku; // À adapter selon votre structure de projet
+
+// Imports requis pour le code (classes et interfaces de votre projet)
+import mon.projet.sudoku.Solver;
+import mon.projet.sudoku.Grille;
+import mon.projet.sudoku.SolveurException;
+import mon.projet.sudoku.HorsBornesException;
+import mon.projet.sudoku.ElementDeGrilleImplAsChar;
+
 /**
  * Implémentation de l'interface Solveur pour résoudre les grilles de Sudoku.
  */
@@ -12,11 +21,13 @@ public class Resolveur implements Solver {
      */
     @Override
     public boolean solve(Grille grille) throws SolveurException {
+        // On commence la résolution à la case (0, 0)
         return solveSudoku(grille, 0, 0);
     }
 
     /**
      * Méthode récursive pour résoudre la grille de Sudoku.
+     * Gère la progression ligne par ligne et colonne par colonne.
      *
      * @param grille La grille de Sudoku.
      * @param row La ligne actuelle.
@@ -24,54 +35,49 @@ public class Resolveur implements Solver {
      * @return true si la grille est résolue, sinon false.
      */
     private boolean solveSudoku(Grille grille, int row, int col) {
-        // Trouver la prochaine case vide
-        if (!findEmptyCell(grille, row, col)) {
-            return true; // Toutes les cases sont remplies, la grille est résolue
-        }
-
-        for (int num = 1; num <= 9; num++) {
-            // Vérifier si le nombre peut être attribué
-            if (isValid(grille, row, col, num)) {
-                // Attribuer le nombre et récursion
-                grille.setValue(row, col, new ElementDeGrilleImplAsChar((char) (num + '0')));
-
-                // Résoudre récursivement le reste de la grille
-                if (solveSudoku(grille, row, col)) {
-                    return true; // La grille est résolue
-                }
-
-                // Backtracking
-                grille.setValue(row, col, new ElementDeGrilleImplAsChar('.'));
-            }
-        }
-
-        return false; // Aucune solution trouvée pour cette case
-    }
-
-    /**
-     * Trouve la prochaine case vide dans la grille.
-     *
-     * @param grille La grille de Sudoku.
-     * @param row La ligne actuelle.
-     * @param col La colonne actuelle.
-     * @return true si une case vide est trouvée, sinon false.
-     */
-    private boolean findEmptyCell(Grille grille, int row, int col) {
         int dimension = grille.getDimension();
 
-        for (; row < dimension; col = 0, row++) {
-            for (; col < dimension; col++) {
-                try {
-                    if (grille.getValue(row, col) != null && grille.getValue(row, col).getValue() == '.') {
-                        return true; // Case vide trouvée
-                    }
-                } catch (HorsBornesException e) {
-                    e.printStackTrace();
-                }
-            }
+        // Si on a atteint la fin de la ligne, on passe à la ligne suivante
+        if (col == dimension) {
+            col = 0;
+            row++;
         }
 
-        return false; // Aucune case vide trouvée
+        // Si on a parcouru toutes les lignes, la grille est résolue avec succès
+        if (row == dimension) {
+            return true;
+        }
+
+        try {
+            // Si la case actuelle n'est pas vide (déjà remplie par l'énoncé), 
+            // on passe directement à la case suivante sur la même ligne
+            if (grille.getValue(row, col) != null && grille.getValue(row, col).getValue() != '.') {
+                return solveSudoku(grille, row, col + 1);
+            }
+
+            // Si la case est vide, on tente d'y placer un chiffre de 1 à 9
+            for (int num = 1; num <= 9; num++) {
+                if (isValid(grille, row, col, num)) {
+                    
+                    // On applique le chiffre (conversion de int à char)
+                    grille.setValue(row, col, new ElementDeGrilleImplAsChar((char) (num + '0')));
+
+                    // Appel récursif pour la case suivante (colonne + 1)
+                    if (solveSudoku(grille, row, col + 1)) {
+                        return true; // Solution trouvée, on remonte la pile d'appels
+                    }
+
+                    // BACKTRACKING : Si le chiffre testé mène à un blocage, 
+                    // on réinitialise la case à '.' et on passe au chiffre suivant
+                    grille.setValue(row, col, new ElementDeGrilleImplAsChar('.'));
+                }
+            }
+        } catch (HorsBornesException e) {
+            // Gestion de l'exception liée à la manipulation de la grille
+            e.printStackTrace();
+        }
+
+        return false; // Aucune solution valide trouvée pour cette branche, on revient en arrière
     }
 
     /**
@@ -84,60 +90,59 @@ public class Resolveur implements Solver {
      * @return true si le nombre peut être placé, sinon false.
      */
     private boolean isValid(Grille grille, int row, int col, int num) {
-        // Vérifiez s'il n'y a pas de doublons dans la ligne, la colonne et la région
-        return !isInRow(grille, row, num) && !isInCol(grille, col, num) && !isInRegion(grille, row - row % 3, col - col % 3, num);
+        // Un chiffre est valide s'il n'est présent ni dans sa ligne, ni dans sa colonne, ni dans sa région 3x3
+        return !isInRow(grille, row, num) && 
+               !isInCol(grille, col, num) && 
+               !isInRegion(grille, row - row % 3, col - col % 3, num);
     }
 
     /**
      * Vérifie s'il y a un doublon dans la ligne.
-     *
-     * @param grille La grille de Sudoku.
-     * @param row La ligne à vérifier.
-     * @param num Le nombre à vérifier.
-     * @return true s'il y a un doublon, sinon false.
      */
     private boolean isInRow(Grille grille, int row, int num) {
-        for (int col = 0; col < grille.getDimension(); col++) {
-            if (grille.getValue(row, col).getValue() == (char) (num + '0')) {
-                return true;
+        try {
+            for (int col = 0; col < grille.getDimension(); col++) {
+                if (grille.getValue(row, col) != null && grille.getValue(row, col).getValue() == (char) (num + '0')) {
+                    return true;
+                }
             }
+        } catch (HorsBornesException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     /**
      * Vérifie s'il y a un doublon dans la colonne.
-     *
-     * @param grille La grille de Sudoku.
-     * @param col La colonne à vérifier.
-     * @param num Le nombre à vérifier.
-     * @return true s'il y a un doublon, sinon false.
      */
     private boolean isInCol(Grille grille, int col, int num) {
-        for (int row = 0; row < grille.getDimension(); row++) {
-            if (grille.getValue(row, col).getValue() == (char) (num + '0')) {
-                return true;
+        try {
+            for (int row = 0; row < grille.getDimension(); row++) {
+                if (grille.getValue(row, col) != null && grille.getValue(row, col).getValue() == (char) (num + '0')) {
+                    return true;
+                }
             }
+        } catch (HorsBornesException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     /**
      * Vérifie s'il y a un doublon dans la région 3x3.
-     *
-     * @param grille La grille de Sudoku.
-     * @param startRow La ligne de départ de la région.
-     * @param startCol La colonne de départ de la région.
-     * @param num Le nombre à vérifier.
-     * @return true s'il y a un doublon, sinon false.
      */
     private boolean isInRegion(Grille grille, int startRow, int startCol, int num) {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (grille.getValue(row + startRow, col + startCol).getValue() == (char) (num + '0')) {
-                    return true;
+        try {
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    if (grille.getValue(row + startRow, col + startCol) != null && 
+                        grille.getValue(row + startRow, col + startCol).getValue() == (char) (num + '0')) {
+                        return true;
+                    }
                 }
             }
+        } catch (HorsBornesException e) {
+            e.printStackTrace();
         }
         return false;
     }

@@ -1,4 +1,4 @@
 /**
- * Package contenant les exercices de Sudoku de l'application.
+ * Package contenant les exceptions personnalisées de l'application Sudoku.
  */
-package fr.miageamiens.isi05.exercice3_sudoku;
+package fr.miageamiens.isi05.sudoku.modele.exceptions;

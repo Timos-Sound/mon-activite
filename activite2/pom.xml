@@ -105,9 +105,9 @@
                     <xmlOutput>true</xmlOutput>
                     <threshold>Low</threshold>
                     <effort>Max</effort>
-                    <!-- Permet au build Maven de ne pas échouer si une erreur JVM interne se produit -->
                     <failOnError>false</failOnError>
                     <includeTests>false</includeTests>
+                    <fork>false</fork>
                 </configuration>
                 <executions>
                     <execution>

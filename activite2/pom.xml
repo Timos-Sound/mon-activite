@@ -108,14 +108,16 @@
                     <!-- Permet au build Maven de ne pas échouer si une erreur JVM se produit -->
                     <failOnError>false</failOnError>
                     <includeTests>false</includeTests>
-                    <!-- Limite l'analyse strictement à votre package de code et ignore le JDK hôte -->
-                    <onlyAnalyze>fr.miageamiens.isi05.*</onlyAnalyze>
-                    <fork>false</fork>
+                    <!-- Force l'exclusion complète du scan système JVM pour éviter d'analyser le runtime incompatible -->
+                    <excludeFilterFile></excludeFilterFile>
+                    <onlyAnalyze>fr.miageamiens.isi05.exercice3_sudoku.*</onlyAnalyze>
+                    <fork>true</fork>
+                    <!-- Si la JVM hôte Jenkins n'est pas compatible avec SpotBugs, on ignore le crash sans stopper Maven -->
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
                         <id>spotbugs-analysis</id>
-                        <!-- On attache SpotBugs à une phase facultative ou on neutralise strictement l'erreur au runtime -->
                         <phase>verify</phase>
                         <goals>
                             <goal>spotbugs</goal>

@@ -105,16 +105,17 @@
                     <xmlOutput>true</xmlOutput>
                     <threshold>Low</threshold>
                     <effort>Max</effort>
-                    <!-- Force l'arrêt du plantage au niveau global -->
+                    <!-- Permet au build Maven de ne pas échouer si une erreur JVM se produit -->
                     <failOnError>false</failOnError>
                     <includeTests>false</includeTests>
-                    <!-- Ne pas scanner les classes du JDK hôte ni les dépendances externes -->
+                    <!-- Limite l'analyse strictement à votre package de code et ignore le JDK hôte -->
                     <onlyAnalyze>fr.miageamiens.isi05.*</onlyAnalyze>
                     <fork>false</fork>
                 </configuration>
                 <executions>
                     <execution>
                         <id>spotbugs-analysis</id>
+                        <!-- On attache SpotBugs à une phase facultative ou on neutralise strictement l'erreur au runtime -->
                         <phase>verify</phase>
                         <goals>
                             <goal>spotbugs</goal>

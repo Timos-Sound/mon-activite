@@ -14,6 +14,7 @@ public class GrilleImplTest {
 
     private GrilleImpl grille;
     private final ValeurDeCase VAL_1 = new ValeurDeCaseAsChar('1');
+    private final ValeurDeCase VAL_2 = new ValeurDeCaseAsChar('2');
     private final ValeurDeCase VAL_9 = new ValeurDeCaseAsChar('9');
     private final ValeurDeCase VAL_VIDE = new ValeurDeCaseAsChar('.');
     private final ValeurDeCase VAL_BAD = new ValeurDeCaseAsChar('X'); // Valeur non autorisée
@@ -23,51 +24,98 @@ public class GrilleImplTest {
         grille = new GrilleImpl(); 
     }
 
-    // --- Tests de base et de dimension ---
+    // --- Tests de base, dimensions et structures ---
     
     @Test
-    public void testGetDimension() { assertEquals(9, grille.getDimension()); }
+    public void testGetDimension() { 
+        assertEquals(9, grille.getDimension()); 
+    }
+
+    @Test
+    public void testGetSousDimension() { 
+        assertEquals(3, grille.getSousDimension()); 
+    }
     
     @Test
     public void testGetValeursAutorisees() {
         assertTrue(grille.getValeursAutorisees().contains(VAL_VIDE));
         assertEquals(10, grille.getValeursAutorisees().size());
     }
+
+    @Test
+    public void testGetValeursPossibles() {
+        ValeurDeCase[] possibles = grille.getValeursPossibles();
+        assertNotNull(possibles);
+        assertEquals(9, possibles.length);
+        assertEquals(VAL_1, possibles[0]);
+    }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetValeurHorsLimites() { grille.setValeur(9, 0, VAL_1); } 
+    // --- Couverture approfondie de verifierBornes (Branches de conditions complexes) ---
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetValeurInvalideType() {
+    public void testSetValeur_X_TropGrand() { 
+        grille.setValeur(9, 0, VAL_1); 
+    } 
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetValeur_X_Negatif() { 
+        grille.getValeur(-1, 0); 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetValeur_Y_Negatif() { 
+        grille.getValeur(0, -1); 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetValeur_Y_TropGrand() { 
+        grille.getValeur(0, 9); 
+    }
+
+    @Test(expected = HorsBornesException.class)
+    public void testIsValeurInitiale_HorsBornes() throws HorsBornesException {
+        grille.isValeurInitiale(9, 0);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetValeur_ValeurInvalide() {
         grille.setValeur(0, 0, VAL_BAD);
     }
     
-    // --- Couverture setValeur---
+    // --- Couverture des états de transition de setValeur (Branches combinatoires) ---
     
     @Test
-    public void testSetValeur_SetInitialTrue() throws HorsBornesException {
-        // Couvre: case vide ET nouvelle valeur non vide -> isInitial = true
+    public void testSetValeur_CaseVideVersRemplie() throws HorsBornesException {
+        // Condition : Vide ET Nouvelle valeur Non Vide -> isInitial devient true
         grille.setValeur(0, 0, VAL_1); 
         assertTrue(grille.isValeurInitiale(0, 0));
     }
     
     @Test
-    public void testSetValeur_CaseDejaRemplie() throws HorsBornesException {
-        // Couvre: case non vide ET nouvelle valeur non vide -> if ignoré, isInitial inchangé
+    public void testSetValeur_CaseDejaRemplieVersAutre() throws HorsBornesException {
+        // Condition : Non Vide ET Nouvelle valeur Non Vide
         grille.setValeur(0, 0, VAL_1); 
         grille.setValeur(0, 0, VAL_9); 
         assertTrue(grille.isValeurInitiale(0, 0)); 
     }
     
     @Test
-    public void testSetValeur_RendreVideCaseVide() throws HorsBornesException {
-        // Couvre: case vide ET nouvelle valeur vide -> if ignoré, isInitial inchangé
+    public void testSetValeur_CaseVideVersVide() throws HorsBornesException {
+        // Condition : Vide ET Nouvelle valeur Vide
         assertFalse(grille.isValeurInitiale(0, 1));
         grille.setValeur(0, 1, VAL_VIDE); 
         assertFalse(grille.isValeurInitiale(0, 1));
     }
+
+    @Test
+    public void testSetValeur_CaseRemplieVersVide() throws HorsBornesException {
+        // Condition : Non Vide ET Nouvelle valeur Vide
+        grille.setValeur(0, 0, VAL_1);
+        grille.setValeur(0, 0, VAL_VIDE);
+        assertEquals(VAL_VIDE, grille.getValeur(0, 0));
+    }
     
-    // --- Tests de complétion et isPossible ---
+    // --- Tests de complétion de la grille ---
     
     @Test
     public void testIsComplete() {
@@ -81,61 +129,77 @@ public class GrilleImplTest {
         assertTrue(grillePleine.isComplete());
     }
 
+    // --- Tests sur la méthode isPossible et validations des contraintes Sudoku ---
+
     @Test
-    public void testIsPossible_Succes() throws HorsBornesException, ValeurInterditeException {
+    public void testIsPossible_Succes() throws Exception {
         assertTrue(grille.isPossible(0, 0, VAL_1)); 
     }
     
     @Test
-    public void testIsPossible_ValeurVide() throws HorsBornesException, ValeurInterditeException {
-        // Couvre la branche if (valeur.equals(VAL_VIDE))
+    public void testIsPossible_ValeurVide() throws Exception {
         assertTrue(grille.isPossible(0, 0, VAL_VIDE)); 
     }
     
     @Test(expected = ValeurInterditeException.class)
-    public void testIsPossible_ValeurInterdite() throws HorsBornesException, ValeurInterditeException {
+    public void testIsPossible_ValeurInterdite() throws Exception {
         grille.isPossible(0, 0, VAL_BAD); 
     }
 
     @Test
-    public void testIsPossible_VioleeParBloc() throws HorsBornesException, ValeurInterditeException {
-        grille.setValeur(1, 1, VAL_1); // Place '1' dans le bloc (0,0)
-        assertFalse(grille.isPossible(0, 0, VAL_1)); // '1' n'est plus possible à (0, 0)
+    public void testIsPossible_VioleeParLigne() throws Exception {
+        grille.setValeur(0, 5, VAL_1);
+        assertFalse(grille.isPossible(0, 0, VAL_1));
+    }
+
+    @Test
+    public void testIsPossible_VioleeParColonne() throws Exception {
+        grille.setValeur(5, 0, VAL_1);
+        assertFalse(grille.isPossible(0, 0, VAL_1));
+    }
+
+    @Test
+    public void testIsPossible_VioleeParBloc() throws Exception {
+        grille.setValeur(1, 1, VAL_1); 
+        assertFalse(grille.isPossible(0, 0, VAL_1)); 
     }
     
     @Test
-    public void testIsPossible_SurCaseDejaRemplie() throws HorsBornesException, ValeurInterditeException {
-        // Couvre: if (!oldValue.equals(VAL_VIDE)) dans isPossible
+    public void testIsPossible_SurCaseDejaRemplieRestauration() throws Exception {
         grille.setValeur(0, 0, VAL_1); 
-        assertTrue(grille.isPossible(0, 0, VAL_9)); // 9 est possible (1 est retiré temporairement pour le test)
-        assertEquals('1', ((ValeurDeCaseAsChar) grille.getValeur(0, 0)).getCaractere()); // Vérifie la restauration
+        assertTrue(grille.isPossible(0, 0, VAL_9)); 
+        assertEquals(VAL_1, grille.getValeur(0, 0)); 
     }
 
-    // --- Tests de setValeur1 (Exceptions Métier) ---
+    // --- Tests sur la méthode métier alternative setValeur1 ---
     
     @Test
     public void testSetValeur1_Succes() throws Exception {
         grille.setValeur1(1, 1, VAL_9);
-        assertEquals('9', ((ValeurDeCaseAsChar) grille.getValeur(1, 1)).getCaractere());
+        assertEquals(VAL_9, grille.getValeur(1, 1));
     }
     
     @Test
     public void testSetValeur1_SupprimerValeur() throws Exception {
-        // Couvre la branche 'else' (valeur.equals(VAL_VIDE)) dans setValeur1
         grille.setValeur1(1, 1, VAL_9); 
         grille.setValeur1(1, 1, VAL_VIDE); 
-        assertEquals('.', ((ValeurDeCaseAsChar) grille.getValeur(1, 1)).getCaractere());
+        assertEquals(VAL_VIDE, grille.getValeur(1, 1));
     }
     
     @Test(expected = ValeurInitialeModificationException.class)
-    public void testSetValeur1_ModificationInitiale() throws Exception {
-        grille.setValeur(0, 0, VAL_1); // Rend la case initiale
-        grille.setValeur1(0, 0, VAL_9); // Tenter de modifier
+    public void testSetValeur1_ModificationInitialeInterdite() throws Exception {
+        grille.setValeur(0, 0, VAL_1); 
+        grille.setValeur1(0, 0, VAL_9); 
+    }
+
+    @Test(expected = ValeurInterditeException.class)
+    public void testSetValeur1_ValeurInterdite() throws Exception {
+        grille.setValeur1(0, 0, VAL_BAD);
     }
 
     @Test(expected = ValeurImpossibleException.class)
-    public void testSetValeur1_ValeurImpossible() throws Exception {
+    public void testSetValeur1_ValeurImpossibleSudoku() throws Exception {
         grille.setValeur1(0, 0, VAL_1); 
-        grille.setValeur1(0, 1, VAL_1); // Viole la contrainte de ligne
+        grille.setValeur1(0, 1, VAL_1); 
     }
 }

@@ -105,8 +105,11 @@
                     <xmlOutput>true</xmlOutput>
                     <threshold>Low</threshold>
                     <effort>Max</effort>
+                    <!-- Force l'arrêt du plantage au niveau global -->
                     <failOnError>false</failOnError>
                     <includeTests>false</includeTests>
+                    <!-- Ne pas scanner les classes du JDK hôte ni les dépendances externes -->
+                    <onlyAnalyze>fr.miageamiens.isi05.*</onlyAnalyze>
                     <fork>false</fork>
                 </configuration>
                 <executions>
@@ -116,6 +119,9 @@
                         <goals>
                             <goal>spotbugs</goal>
                         </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

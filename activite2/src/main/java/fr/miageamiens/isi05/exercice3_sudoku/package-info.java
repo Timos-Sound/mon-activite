@@ -1,5 +1,4 @@
-
 /**
- * Ce package contient les classes nécessaires pour l'activité 2.
+ * Package contenant les exercices de Sudoku de l'application.
  */
-package com.example.activite2;
+package fr.miageamiens.isi05.exercice3_sudoku

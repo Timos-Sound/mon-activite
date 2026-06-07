@@ -1,8 +1,9 @@
 
-
 /**
- * Implémentation de l'interface Solveur pour résoudre les grilles de Sudoku.
+ * Package contenant les exercices de Sudoku de l'application.
  */
+package fr.miageamiens.isi05.exercice3_sudoku;
+
 public class Resolveur implements Solver {
 
     /**

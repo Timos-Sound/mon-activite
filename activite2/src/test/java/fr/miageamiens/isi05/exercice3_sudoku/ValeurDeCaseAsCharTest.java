@@ -6,53 +6,40 @@ import org.junit.Test;
 public class ValeurDeCaseAsCharTest {
 
     @Test
-    public void testGetCaractere() {
-        ValeurDeCaseAsChar v = new ValeurDeCaseAsChar('5');
-        assertEquals('5', v.getCaractere());
+    public void testGetValeurEtCaractere() {
+        ValeurDeCaseAsChar case1 = new ValeurDeCaseAsChar('5');
+        // Vérifie getValeur() (retourne Character)
+        assertEquals('5', case1.getValeur()); 
+        // Vérifie getCaractere() (retourne char)
+        assertEquals('5', case1.getCaractere());
     }
 
     @Test
     public void testToString() {
-        ValeurDeCaseAsChar v = new ValeurDeCaseAsChar('A');
-        assertEquals("A", v.toString());
+        ValeurDeCaseAsChar case1 = new ValeurDeCaseAsChar('9');
+        assertEquals("9", case1.toString());
     }
-
+    
     @Test
-    public void testEquals_MemeInstance() {
-        ValeurDeCaseAsChar v = new ValeurDeCaseAsChar('1');
-        // Test de la branche 'if (this == o) return true;'
-        assertTrue(v.equals(v));
-    }
-
-    @Test
-    public void testEquals_NullEtAutreClasse() {
-        ValeurDeCaseAsChar v = new ValeurDeCaseAsChar('1');
-        // Test de la branche 'if (o == null || getClass() != o.getClass()) return false;'
-        assertFalse(v.equals(null));
-        assertFalse(v.equals("Une simple chaine"));
-    }
-
-    @Test
-    public void testEquals_ValeursIdentiquesEtDifferentes() {
-        ValeurDeCaseAsChar v1 = new ValeurDeCaseAsChar('9');
-        ValeurDeCaseAsChar v2 = new ValeurDeCaseAsChar('9');
-        ValeurDeCaseAsChar v3 = new ValeurDeCaseAsChar('2');
-
-        // Cas nominal vrai
-        assertTrue(v1.equals(v2));
-        // Cas nominal faux (caractère différent)
-        assertFalse(v1.equals(v3));
-    }
-
-    @Test
-    public void testHashCode() {
-        ValeurDeCaseAsChar v1 = new ValeurDeCaseAsChar('4');
-        ValeurDeCaseAsChar v2 = new ValeurDeCaseAsChar('4');
-        ValeurDeCaseAsChar v3 = new ValeurDeCaseAsChar('7');
-
-        // Deux objets égaux doivent retourner le même contrat de hashcode
-        assertEquals(v1.hashCode(), v2.hashCode());
-        // Deux objets différents ont généralement des hashcodes différents
-        assertNotEquals(v1.hashCode(), v3.hashCode());
+    public void testEqualsEtHashCode() {
+        ValeurDeCaseAsChar v1a = new ValeurDeCaseAsChar('1');
+        ValeurDeCaseAsChar v1b = new ValeurDeCaseAsChar('1');
+        ValeurDeCaseAsChar v2 = new ValeurDeCaseAsChar('2');
+        
+        // Couverture: this == obj
+        assertTrue(v1a.equals(v1a)); 
+        
+        // Couverture: Comparaison réussie et HashCode cohérent
+        assertTrue(v1a.equals(v1b)); 
+        assertEquals(v1a.hashCode(), v1b.hashCode());
+        
+        // Couverture: Valeur différente
+        assertFalse(v1a.equals(v2)); 
+        
+        // Couverture: Objet null
+        assertFalse(v1a.equals(null)); 
+        
+        // Couverture: Type d'objet incorrect
+        assertFalse(v1a.equals(new Object())); 
     }
 }

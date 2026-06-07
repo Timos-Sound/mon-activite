@@ -146,9 +146,9 @@
                     <!-- On restreint la collecte de couverture uniquement à GrilleImpl et ValeurDeCaseAsChar -->
                     <includes>
                         <include>fr/miageamiens/isi05/exercice3_sudoku/GrilleImpl.class</include>
-                        <include>fr/miageamiens/isi05/exercice3_sudoku/GrilleImpl$*.class</include>
+                        <include>fr/miageamiens/isi05/exercice3_sudoku/GrilleImplTest.class</include>
                         <include>fr/miageamiens/isi05/exercice3_sudoku/ValeurDeCaseAsChar.class</include>
-                        <include>fr/miageamiens/isi05/exercice3_sudoku/ValeurDeCaseAsChar$*.class</include>
+                        <include>fr/miageamiens/isi05/exercice3_sudoku/ValeurDeCaseAsCharTest.class</include>
                     </includes>
                 </configuration>
                 <executions>

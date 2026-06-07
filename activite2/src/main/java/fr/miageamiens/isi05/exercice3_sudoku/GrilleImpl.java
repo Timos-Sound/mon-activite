@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Implémentation de la grille de Sudoku 9x9.
  */
-public final class GrilleImpl implements Grille { // <-- Ajout de final ici
+public final class GrilleImpl implements Grille {
 
   /** Dimension de la grille. */
   private static final int DIMENSION = 9;
@@ -69,10 +69,12 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
    * @param y Coordonnée y (colonne).
    * @throws HorsBornesException Si les coordonnées sont invalides.
    */
-  private void verifierBornes(final int x, final int y) throws HorsBornesException {
+  private void verifierBornes(final int x, final int y)
+      throws HorsBornesException {
     if (x < 0 || x >= DIMENSION || y < 0 || y >= DIMENSION) {
       throw new HorsBornesException(
-          "Coordonnées (" + x + ", " + y + ") hors des bornes [0," + (DIMENSION - 1) + "]");
+          "Coordonnées (" + x + ", " + y + ") hors des bornes [0,"
+          + (DIMENSION - 1) + "]");
     }
   }
 
@@ -97,8 +99,6 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
    * @return Tableau des valeurs possibles.
    */
   public ValeurDeCase[] getValeursPossibles() {
-    // Si l'analyseur râle encore sur cette ligne, clonez le tableau pour l'immutabilité :
-    // return this.valeursPossibles.clone();
     return this.valeursPossibles;
   }
 
@@ -121,7 +121,8 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
     }
 
     if (!this.getValeursAutorisees().contains(valeur)) {
-      throw new IllegalArgumentException("Valeur non autorisée : " + valeur.toString());
+      throw new IllegalArgumentException("Valeur non autorisée : "
+          + valeur.toString());
     }
 
     if (this.grille[x][y].equals(VAL_VIDE) && !valeur.equals(VAL_VIDE)) {
@@ -144,13 +145,15 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
   }
 
   @Override
-  public boolean isValeurInitiale(final int x, final int y) throws HorsBornesException {
+  public boolean isValeurInitiale(final int x, final int y)
+      throws HorsBornesException {
     this.verifierBornes(x, y);
     return this.isInitial[x][y];
   }
 
   @Override
-  public boolean isPossible(final int x, final int y, final ValeurDeCase valeur)
+  public boolean isPossible(final int x, final int y,
+      final ValeurDeCase valeur)
       throws HorsBornesException, ValeurInterditeException {
     this.verifierBornes(x, y);
 
@@ -159,7 +162,8 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
     }
 
     if (!this.valeursAutorisees.contains(valeur)) {
-      throw new ValeurInterditeException("Valeur non autorisée : " + valeur.toString());
+      throw new ValeurInterditeException("Valeur non autorisée : "
+          + valeur.toString());
     }
 
     ValeurDeCase oldValue = this.grille[x][y];
@@ -185,7 +189,8 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
    * @param val Valeur à vérifier.
    * @return true si la valeur ne viole aucune contrainte, false sinon.
    */
-  private boolean isSafe(final int row, final int col, final ValeurDeCase val) {
+  private boolean isSafe(final int row, final int col,
+      final ValeurDeCase val) {
     for (int c = 0; c < DIMENSION; c++) {
       if (c != col && this.grille[row][c].equals(val)) {
         return false;
@@ -205,7 +210,8 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
         int currRow = startRow + r;
         int currCol = startCol + c;
 
-        if (!(currRow == row && currCol == col) && this.grille[currRow][currCol].equals(val)) {
+        if (!(currRow == row && currCol == col)
+            && this.grille[currRow][currCol].equals(val)) {
           return false;
         }
       }
@@ -220,10 +226,10 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
    * @param x Coordonnée x (ligne).
    * @param y Coordonnée y (colonne).
    * @param valeur La valeur à définir.
-   * @throws ValeurImpossibleException Si la valeur viole une contrainte Sudoku.
+   * @throws ValeurImpossibleException Si la valeur viole une contrainte.
    * @throws ValeurInterditeException Si la valeur n'est pas autorisée.
    * @throws HorsBornesException Si les coordonnées sont hors limites.
-   * @throws ValeurInitialeModificationException Si on tente de modifier une case initiale.
+   * @throws ValeurInitialeModificationException Si la case est initiale.
    */
   public void setValeur1(final int x, final int y, final ValeurDeCase valeur)
       throws ValeurImpossibleException, ValeurInterditeException,
@@ -233,11 +239,13 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
 
     if (this.isValeurInitiale(x, y)) {
       throw new ValeurInitialeModificationException(
-          "La case (" + x + ", " + y + ") est une valeur initiale et ne peut être modifiée.");
+          "La case (" + x + ", " + y + ") est une valeur initiale"
+          + " et ne peut être modifiée.");
     }
 
     if (!this.getValeursAutorisees().contains(valeur)) {
-      throw new ValeurInterditeException("Valeur non reconnue : " + valeur.toString());
+      throw new ValeurInterditeException("Valeur non reconnue : "
+          + valeur.toString());
     }
 
     if (!valeur.equals(VAL_VIDE)) {
@@ -247,7 +255,8 @@ public final class GrilleImpl implements Grille { // <-- Ajout de final ici
       if (!this.isSafe(x, y, valeur)) {
         this.grille[x][y] = oldValue;
         throw new ValeurImpossibleException("La valeur " + valeur.toString()
-            + " est impossible à la position (" + x + ", " + y + ") selon les règles du Sudoku.");
+            + " est impossible à la position (" + x + ", " + y + ")"
+            + " selon les règles du Sudoku.");
       }
       this.grille[x][y] = valeur;
     } else {

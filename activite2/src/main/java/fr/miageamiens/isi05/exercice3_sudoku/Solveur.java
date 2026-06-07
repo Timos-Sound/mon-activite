@@ -1,6 +1,5 @@
 package mon.projet.sudoku; // À adapter selon votre structure de projet
 
-// Imports requis pour le code (classes et interfaces de votre projet)
 import mon.projet.sudoku.Solver;
 import mon.projet.sudoku.Grille;
 import mon.projet.sudoku.SolveurException;

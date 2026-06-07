@@ -7,7 +7,7 @@ import fr.miageamiens.isi05.sudoku.modele.exceptions.GrilleException;
 /**
  * Implémentation de l'interface Solver pour résoudre les grilles de Sudoku.
  */
-public class Resolveur implements Solver {
+public class Resolver implements Solver {
 
     /**
      * Point d'entrée de la résolution demandé par l'interface Solver.

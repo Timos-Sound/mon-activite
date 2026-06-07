@@ -4,7 +4,7 @@
  */
 package fr.miageamiens.isi05.exercice3_sudoku;
 
-import fr.miageamiens.isi05.sudoku.modele*;
+import fr.miageamiens.isi05.sudoku.modele.*;
 
 public class Resolveur implements Solver {
 

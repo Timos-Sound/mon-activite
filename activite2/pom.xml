@@ -100,12 +100,12 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.8.3.1</version>
+                <version>4.8.6.0</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <threshold>Low</threshold>
                     <effort>Max</effort>
-                    <!-- Évite que le build complet échoue si SpotBugs rencontre un problème d'analyse JVM -->
+                    <!-- Permet au build Maven de ne pas échouer si une erreur JVM interne se produit -->
                     <failOnError>false</failOnError>
                     <includeTests>false</includeTests>
                 </configuration>

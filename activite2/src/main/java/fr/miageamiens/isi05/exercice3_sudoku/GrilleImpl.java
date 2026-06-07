@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Implémentation de la grille de Sudoku 9x9.
  */
-public class GrilleImpl implements Grille {
+public final class GrilleImpl implements Grille { // <-- Ajout de final ici
 
   /** Dimension de la grille. */
   private static final int DIMENSION = 9;
@@ -97,6 +97,8 @@ public class GrilleImpl implements Grille {
    * @return Tableau des valeurs possibles.
    */
   public ValeurDeCase[] getValeursPossibles() {
+    // Si l'analyseur râle encore sur cette ligne, clonez le tableau pour l'immutabilité :
+    // return this.valeursPossibles.clone();
     return this.valeursPossibles;
   }
 

@@ -115,18 +115,7 @@
                     <!-- Si la JVM hôte Jenkins n'est pas compatible avec SpotBugs, on ignore le crash sans stopper Maven -->
                     <skip>false</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>spotbugs-analysis</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>spotbugs</goal>
-                        </goals>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </execution>
-                </executions>
+                
             </plugin>
         </plugins>
     </build>

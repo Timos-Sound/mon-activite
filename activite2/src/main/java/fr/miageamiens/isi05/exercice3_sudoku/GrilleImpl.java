@@ -1,3 +1,6 @@
+/**
+ * Package contenant les exercices de Sudoku de l'application.
+ */
 package fr.miageamiens.isi05.exercice3_sudoku;
 
 import fr.miageamiens.isi05.sudoku.modele.Grille;

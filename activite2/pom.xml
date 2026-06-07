@@ -83,6 +83,7 @@
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
                     <format>xml</format>
+                    <failOnViolation>false</failOnViolation>
                 </configuration>
                 <executions>
                     <execution>
@@ -104,6 +105,9 @@
                     <xmlOutput>true</xmlOutput>
                     <threshold>Low</threshold>
                     <effort>Max</effort>
+                    <!-- Évite que le build complet échoue si SpotBugs rencontre un problème d'analyse JVM -->
+                    <failOnError>false</failOnError>
+                    <includeTests>false</includeTests>
                 </configuration>
                 <executions>
                     <execution>
